@@ -4,6 +4,9 @@
 #
 # Kota Yamaguchi 2015 <kyamagu@vision.is.tohoku.ac.jp>
 
+# Ensure various SGE env vars are set
+. /etc/profile.d/sge.sh
+
 # Check if the environment file is writable.
 ENV_FILE=$SGE_JOB_SPOOL_DIR/environment
 if [ ! -f $ENV_FILE -o ! -w $ENV_FILE ]
@@ -11,10 +14,6 @@ then
   echo "ERROR: Environment file ("$SGE_JOB_SPOOL_DIR"/environment) is not writable!"
   exit 1
 fi
-
-# Write environment file location to home folder (used by qrsh users)
-USER_ENV_FILE=$SGE_O_HOME/sge_env_path
-echo $ENV_FILE > $USER_ENV_FILE
 
 # Query how many gpus to allocate.
 NGPUS=$(qstat -j $JOB_ID | \
